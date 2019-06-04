@@ -1,0 +1,19 @@
+.Choice {
+  padding: 0.3em 0.3em 0.3em 0.3em !important;
+}
+.ButtonBase {
+  padding: 0 0.6em 1.2em 0.6em !important;
+  border: 1px solid #ffff !important;
+}
+.ChoiceBackdrop:hover {
+  opacity: 0;
+}
+.Avatar {
+  background-color: transparent !important;
+  min-height: 110px;
+  min-width: 110px;
+  margin: 0 auto;
+}
+.Avatar .Icon {
+  font-size: 3em !important;
+}

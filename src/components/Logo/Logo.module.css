@@ -1,0 +1,8 @@
+.Logo {
+    padding: 8px;
+    flex-grow: 1;
+}
+.Logo img {
+    height: 50px;
+    width: 50px;
+}
