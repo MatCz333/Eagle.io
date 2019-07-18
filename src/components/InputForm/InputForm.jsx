@@ -8,10 +8,12 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import { connect } from "react-redux";
 import SendIcon from "@material-ui/icons/CloudUpload";
 import Button from "@material-ui/core/Button";
-import useStyles from "./InputFormStyles";
+import Divider from "@material-ui/core/Divider";
 import { convertDataToCurrentTimeZone } from "../../store/sagas/dataInput";
 import * as actions from "../../store/actions/index";
 import axios from "../../axios-eagle";
+import DatePicker from "../DatePicker";
+
 /**
  * Responsible for generating form component
  *
@@ -32,7 +34,11 @@ class InputForm extends Component {
     this.setState({ [name]: "" });
   };
 
-  inputChangedHandler = event => {
+  inputChangedHandler = (event, date) => {
+    if (date) {
+      this.setState({ date });
+      return;
+    }
     const { name, value } = event.currentTarget;
     this.setState({ [name]: value });
   };
@@ -50,10 +56,16 @@ class InputForm extends Component {
   renderForm = elementSelected => {
     const { getAllChildrenPerParent } = this.props;
     const model = getAllChildrenPerParent(elementSelected);
-    const formUI = model.map(parameter => {
+    const parameterValues = model.map(parameter => {
       return (
         <React.Fragment key={parameter._id}>
-          <Grid item xs={12} sm={6}>
+          <Grid
+            style={{
+              paddingBottom: "20px"
+            }}
+            item
+            xs={12}
+          >
             <TextField
               inputRef={element => {
                 this[parameter._id] = element;
@@ -81,7 +93,19 @@ class InputForm extends Component {
         </React.Fragment>
       );
     });
-    return formUI;
+    const form = (
+      <React.Fragment>
+        <Grid item xs={12} sm={6}>
+          <Typography variant="subtitle2" gutterBottom>
+            Last known parameter values:
+          </Typography>
+        </Grid>
+        <Grid item={12} sm={6}>
+          {parameterValues}
+        </Grid>
+      </React.Fragment>
+    );
+    return form;
   };
 
   render() {
@@ -89,14 +113,53 @@ class InputForm extends Component {
     if (posting) this.postDataHandler();
     return (
       <React.Fragment>
-        <Typography variant="h6" gutterBottom>
-          {`Parameter values for ${elementSelected.name}`}
-        </Typography>
-        <form>
-          <Grid container spacing={3}>
-            {this.renderForm(elementSelected)}
+        <div
+          style={{
+            width: "100%",
+            height: "100%"
+          }}
+        >
+          <Typography variant="h5">{elementSelected.name}</Typography>
+          <Divider
+            style={{
+              marginLeft: 0,
+              marginRight: 0
+            }}
+            variant="middle"
+          ></Divider>
+          <form>
+            <Grid
+              style={{
+                marginTop: "20px"
+              }}
+              container
+            >
+              {this.renderForm(elementSelected)}
+            </Grid>
+          </form>
+          <Divider
+            style={{
+              marginLeft: 0,
+              marginRight: 0
+            }}
+            variant="middle"
+          ></Divider>
+          <Grid
+            style={{
+              margin: "20px 0"
+            }}
+            container
+          >
+            <Grid item xs={12} sm={6}>
+              <Typography variant="subtitle2" gutterBottom>
+                Input date:
+              </Typography>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <DatePicker dateChange={this.inputChangedHandler}></DatePicker>
+            </Grid>
           </Grid>
-        </form>
+        </div>
       </React.Fragment>
     );
   }

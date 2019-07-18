@@ -31,6 +31,7 @@ export function* fetchDataSaga() {
 }
 
 export function* postDataSaga(action) {
+  console.log(action);
   const id = Object.keys(action.formData)[0];
   const updatedBodyValues = {
     docType: "jts",
