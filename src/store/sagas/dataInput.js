@@ -31,18 +31,26 @@ export function* fetchDataSaga() {
 }
 
 export function* postDataSaga(action) {
-  console.log(action);
+  const formData = action.formData;
   const id = Object.keys(action.formData)[0];
+
+  const date = formData.date;
+  const updatedBody = [];
+  const updatedValues = {};
+  for (const key in formData) {
+    updatedValues.key = formData[key];
+    updatedBody.push(updatedValues);
+  }
   const updatedBodyValues = {
     docType: "jts",
     version: "1.0",
     data: [
       {
-        ts: Date.now(),
-        f: { "0": { v: 30 }, "1": { v: 40 } }
+        ts: formData,
+        f: { "0": { v: 30 } }
       },
       {
-        ts: Date.now(),
+        ts: formData,
         f: { "0": { v: 50 } }
       }
     ]
