@@ -27,7 +27,7 @@ const styles = theme => ({
     marginRight: 16,
     width: "auto",
     [theme.breakpoints.up(600 + 8 * 2)]: {
-      width: 600,
+      maxWidth: 600,
       marginLeft: "auto",
       marginRight: "auto"
     }
@@ -98,8 +98,7 @@ class DataInput extends Component {
       "Select workspaces",
       "Select location",
       "Select data source",
-      "Input Data",
-      "Send"
+      "Input Data"
     ];
   };
 
