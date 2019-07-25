@@ -241,6 +241,7 @@ class DataInput extends Component {
    */
   handleResetActiveStep = () => {
     const { onResetPostStatus } = this.props;
+    // clear global state
     onResetPostStatus();
     // clear local state
     this.setState({
@@ -257,6 +258,9 @@ class DataInput extends Component {
     if (!fetchLoading && data) {
       content = this.getStepContent(activeStep);
     }
+    /**
+     * POST DATA FAILED (ERROR VIEW)
+     */
     if (error) {
       content = (
         <React.Fragment>
@@ -279,6 +283,9 @@ class DataInput extends Component {
         </React.Fragment>
       );
     }
+     /**
+     * POST DATA SUCCESS (SUCCESS VIEW)
+     */
     if (posted) {
       content = (
         <React.Fragment>

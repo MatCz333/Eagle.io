@@ -61,14 +61,29 @@ const useStyles = makeStyles(theme => {
     }
   };
 });
+
 /**
- * Component that render all of the choices in main view
+ * Component that renders animated svg for particular option
+ */
+const IconSprite = props => {
+  const { sprite } = props;
+  return (
+    <div
+      style={{
+        backgroundImage: `url(${sprite})`
+      }}
+      {...props}
+    />
+  );
+};
+
+/**
+ * Component that renders all of the choices in main view
  */
 
 const Choice = props => {
   const classes = useStyles(props);
-  const { click, path, textDescription, icon } = props;
-  const IconComponent = icon;
+  const { click, path, textDescription, sprite } = props;
   return (
     <Grid item xs={5}>
       <Paper className={classes.card}>
@@ -79,7 +94,7 @@ const Choice = props => {
           focusVisibleClassName
         >
           <div className={classes.labelWrapper}>
-            <IconComponent className={classes.labelIcon} />
+            <IconSprite sprite={sprite} className={classes.labelIcon} />
             <Typography
               className={classes.labelText}
               variant="h6"

@@ -23,7 +23,7 @@ const Choices = props => {
         {...(entered ? { timeout } : {})}
       >
         <Choice
-          icon={choiceOptions[1].icon}
+          sprite={choiceOptions[1].spriteURL}
           textDescription={choiceOptions[1].label}
           click={click}
           key={choiceOptions[1].path}
