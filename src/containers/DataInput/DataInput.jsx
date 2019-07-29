@@ -283,7 +283,7 @@ class DataInput extends Component {
         </React.Fragment>
       );
     }
-     /**
+    /**
      * POST DATA SUCCESS (SUCCESS VIEW)
      */
     if (posted) {
@@ -312,11 +312,10 @@ class DataInput extends Component {
         <main className={classes.layout}>
           <Paper className={classes.paper}>
             {posted || error ? null : (
+              <React.Fragment>
               <Typography align="center" variant="h4">
                 DATA INPUT
               </Typography>
-            )}
-            {posted || error ? null : (
               <Stepper
                 className={classes.stepper}
                 activeStep={activeStep}
@@ -328,6 +327,7 @@ class DataInput extends Component {
                   </Step>
                 ))}
               </Stepper>
+              </React.Fragment>
             )}
             {content}
             <FormControls
