@@ -12,9 +12,9 @@ import Divider from "@material-ui/core/Divider";
 import { convertDataToCurrentTimeZone } from "../../store/sagas/dataInput";
 import * as actions from "../../store/actions/index";
 import axios from "../../axios-eagle";
-import DatePicker from "../DatePicker";
+import DateAndTimePicker from "../DateAndTimePicker";
 
-/**
+/**"
  * Responsible for generating form component
  *
  */
@@ -35,6 +35,7 @@ class InputForm extends Component {
   };
 
   inputChangedHandler = (event, date) => {
+    console.log(date);
     if (date) {
       this.setState({ date });
       return;
@@ -156,7 +157,9 @@ class InputForm extends Component {
               </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <DatePicker dateChange={this.inputChangedHandler}></DatePicker>
+              <DateAndTimePicker
+                dateChange={this.inputChangedHandler}
+              ></DateAndTimePicker>
             </Grid>
           </Grid>
         </div>

@@ -32,8 +32,8 @@ export function* fetchDataSaga() {
 
 export function* postDataSaga(action) {
   const formData = action.formData;
+  console.log(formData);
   const id = Object.keys(action.formData)[0];
-
   const date = formData.date;
   const updatedBody = [];
   const updatedValues = {};
@@ -46,11 +46,11 @@ export function* postDataSaga(action) {
     version: "1.0",
     data: [
       {
-        ts: formData,
+        ts: date,
         f: { "0": { v: 30 } }
       },
       {
-        ts: formData,
+        ts: date,
         f: { "0": { v: 50 } }
       }
     ]
