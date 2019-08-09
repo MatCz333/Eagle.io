@@ -27,7 +27,7 @@ const styles = theme => ({
     marginRight: 16,
     width: "auto",
     [theme.breakpoints.up(600 + 8 * 2)]: {
-      width: 600,
+      maxWidth: 600,
       marginLeft: "auto",
       marginRight: "auto"
     }
@@ -98,8 +98,7 @@ class DataInput extends Component {
       "Select workspaces",
       "Select location",
       "Select data source",
-      "Input Data",
-      "Send"
+      "Input Data"
     ];
   };
 
@@ -119,64 +118,57 @@ class DataInput extends Component {
     ];
   };
 
+  /**
+   * Retrieve content for activeStep
+   * @param step Value that represents the current step of the stepper
+   * @return JSX element that contains List content that corresponds to activeStep
+   */
   getStepContent = step => {
     const { data } = this.props;
     const { stackElementsSelected, activeStep } = this.state;
     const elementSelected = stackElementsSelected[activeStep - 1];
+
+    // create list content based on the activeStep.
+    const createList = listContent => (
+      <List
+        dense
+        subheader={
+          <ListSubheader component="div">
+            {this.getListSubheaderTitle(elementSelected)[activeStep]}
+          </ListSubheader>
+        }
+      >
+        {listContent}
+      </List>
+    );
+
     switch (step) {
       case 0:
-        return (
-          <List
-            dense
-            subheader={
-              <ListSubheader component="div">
-                {this.getListSubheaderTitle(elementSelected)[activeStep]}
-              </ListSubheader>
-            }
-          >
-            {data.map(workspace => (
-              <WorkspaceList
-                click={this.handleNext}
-                getAllChildrenPerParent={this.getAllChildrenPerParent}
-                key={workspace._id}
-                workspace={workspace}
-              />
-            ))}
-          </List>
+        return createList(
+          data.map(workspace => (
+            <WorkspaceList
+              click={this.handleNext}
+              getAllChildrenPerParent={this.getAllChildrenPerParent}
+              key={workspace._id}
+              workspace={workspace}
+            />
+          ))
         );
       case 1:
-        return (
-          <List
-            dense
-            subheader={
-              <ListSubheader component="div">
-                {this.getListSubheaderTitle(elementSelected)[activeStep]}
-              </ListSubheader>
-            }
-          >
-            <LocationList
-              getAllChildrenPerParent={this.getAllChildrenPerParent}
-              elementSelected={elementSelected}
-              handleNext={this.handleNext}
-            />
-          </List>
+        return createList(
+          <LocationList
+            getAllChildrenPerParent={this.getAllChildrenPerParent}
+            elementSelected={elementSelected}
+            handleNext={this.handleNext}
+          />
         );
       case 2:
-        return (
-          <List
-            dense
-            subheader={
-              <ListSubheader component="div">
-                {this.getListSubheaderTitle(elementSelected)[activeStep]}
-              </ListSubheader>
-            }
-          >
-            <SensorList
-              getAllChildrenPerParent={this.getAllChildrenPerParent}
-              elementSelected={elementSelected}
-              handleNext={this.handleNext}
-            />
-          </List>
+        return createList(
+          <SensorList
+            getAllChildrenPerParent={this.getAllChildrenPerParent}
+            elementSelected={elementSelected}
+            handleNext={this.handleNext}
+          />
         );
       case 3:
         return (
@@ -205,7 +197,7 @@ class DataInput extends Component {
   };
 
   /**
-   * Handler that is responsible for handling generating next step.
+   * Handler that is responsible for  generating next step.
    * @param String elementId a unique value for a given element that was clicked
    */
   handleNext = element => {
@@ -225,7 +217,7 @@ class DataInput extends Component {
   };
 
   /**
-   * Handler that is responsible for setting new view upon clicking back button
+   * Handler that is responsible for  generating previous step.
    */
   handleBack = () => {
     this.setState(state => ({
@@ -242,6 +234,7 @@ class DataInput extends Component {
    */
   handleResetActiveStep = () => {
     const { onResetPostStatus } = this.props;
+    // clear global state
     onResetPostStatus();
     // clear local state
     this.setState({
@@ -258,6 +251,9 @@ class DataInput extends Component {
     if (!fetchLoading && data) {
       content = this.getStepContent(activeStep);
     }
+    /**
+     * POST DATA FAILED (ERROR VIEW)
+     */
     if (error) {
       content = (
         <React.Fragment>
@@ -280,6 +276,9 @@ class DataInput extends Component {
         </React.Fragment>
       );
     }
+    /**
+     * POST DATA SUCCESS (SUCCESS VIEW)
+     */
     if (posted) {
       content = (
         <React.Fragment>
@@ -306,22 +305,22 @@ class DataInput extends Component {
         <main className={classes.layout}>
           <Paper className={classes.paper}>
             {posted || error ? null : (
-              <Typography align="center" variant="h4">
-                DATA INPUT
-              </Typography>
-            )}
-            {posted || error ? null : (
-              <Stepper
-                className={classes.stepper}
-                activeStep={activeStep}
-                alternativeLabel
-              >
-                {steps.map(label => (
-                  <Step key={label}>
-                    <StepLabel>{label}</StepLabel>
-                  </Step>
-                ))}
-              </Stepper>
+              <React.Fragment>
+                <Typography align="center" variant="h4">
+                  DATA INPUT
+                </Typography>
+                <Stepper
+                  className={classes.stepper}
+                  activeStep={activeStep}
+                  alternativeLabel
+                >
+                  {steps.map(label => (
+                    <Step key={label}>
+                      <StepLabel>{label}</StepLabel>
+                    </Step>
+                  ))}
+                </Stepper>
+              </React.Fragment>
             )}
             {content}
             <FormControls
