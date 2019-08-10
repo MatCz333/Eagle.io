@@ -1,5 +1,5 @@
 import * as actionTypes from "../actions/actionTypes";
-import updateObject from "../Utility";
+import updateObject from "../../shared/Helpers";
 
 /* eslint no-underscore-dangle: 0 */
 
@@ -17,7 +17,11 @@ const initialState = {
  */
 
 const postDataInit = (state, action) => {
-  return updateObject(state, { posting: true, fetchLoading: false, postLoading: true });
+  return updateObject(state, {
+    posting: true,
+    fetchLoading: false,
+    postLoading: true
+  });
 };
 
 const postDataStarted = (state, action) => {
@@ -68,13 +72,19 @@ const fetchDataSuccess = (state, action) => {
 };
 
 const fetchDataFailed = state => {
-  return updateObject(state, { error: true, fetchLoading: false,
-    postLoading: false, });
+  return updateObject(state, {
+    error: true,
+    fetchLoading: false,
+    postLoading: false
+  });
 };
 
 const fetchDataStarted = state => {
-  return updateObject(state, { error: false, fetchLoading: true,
-    postLoading: false,});
+  return updateObject(state, {
+    error: false,
+    fetchLoading: true,
+    postLoading: false
+  });
 };
 
 const reducer = (state = initialState, action) => {

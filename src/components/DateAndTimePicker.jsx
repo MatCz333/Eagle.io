@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   MuiPickersUtilsProvider,
-  DateTimePicker,
   KeyboardDateTimePicker
 } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
@@ -17,11 +16,14 @@ function DateAndTimePicker(props) {
     <>
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <KeyboardDateTimePicker
-          variant="inline"
+          autoOk
           ampm={false}
           label="Time of input"
           value={selectedDate}
-          onChange={dateChange}
+          onChange={date => {
+            handleDateChange(date);
+            dateChange(null, date);
+          }}
           onError={console.log}
         />
       </MuiPickersUtilsProvider>

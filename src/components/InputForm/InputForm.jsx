@@ -2,19 +2,16 @@
 import React, { Component } from "react";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
-import Thermometer from "mdi-material-ui/Thermometer";
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import { connect } from "react-redux";
-import SendIcon from "@material-ui/icons/CloudUpload";
-import Button from "@material-ui/core/Button";
 import Divider from "@material-ui/core/Divider";
-import { convertDataToCurrentTimeZone } from "../../store/sagas/dataInput";
+import { convertDataToCurrentTimeZone } from "../../shared/Helpers";
 import * as actions from "../../store/actions/index";
 import axios from "../../axios-eagle";
 import DateAndTimePicker from "../DateAndTimePicker";
 
-/**"
+/** "
  * Responsible for generating form component
  *
  */
@@ -35,7 +32,6 @@ class InputForm extends Component {
   };
 
   inputChangedHandler = (event, date) => {
-    console.log(date);
     if (date) {
       this.setState({ date });
       return;

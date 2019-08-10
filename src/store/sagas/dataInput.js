@@ -20,6 +20,9 @@ function getNestedChildren(rawData) {
   return transformedData;
 }
 
+/**
+ * A saga that handles asynchronous side effects of fetching the data from API
+ */
 export function* fetchDataSaga() {
   try {
     const response = yield axios.get("/nodes");
@@ -30,55 +33,50 @@ export function* fetchDataSaga() {
   }
 }
 
+/**
+ * A saga that handles asynchronous side effects of posting the data to API
+ */
 export function* postDataSaga(action) {
-  const formData = action.formData;
-  console.log(formData);
-  const id = Object.keys(action.formData)[0];
-  const date = formData.date;
-  const updatedBody = [];
-  const updatedValues = {};
-  for (const key in formData) {
-    updatedValues.key = formData[key];
-    updatedBody.push(updatedValues);
-  }
+  const { formData } = action;
+  const { date } = formData;
+  const parametersArray = [];
+  const data = [];
+  const values = {};
+  Object.entries(formData).forEach((entries, index) => {
+    if (entries[0] !== "date") {
+      // get parameters ID'S
+      parametersArray.push(`${entries[0]}(columnIndex:${index})`);
+      // get values
+      values[index] = { v: parseInt(entries[1], 10) };
+    }
+  });
+
+  data.push({
+    "ts": moment(date).toISOString(),
+    "f": values
+  });
+
   const updatedBodyValues = {
     docType: "jts",
     version: "1.0",
-    data: [
-      {
-        ts: date,
-        f: { "0": { v: 30 } }
-      },
-      {
-        ts: date,
-        f: { "0": { v: 50 } }
-      }
-    ]
+    // create body data for http request
+    data
+  };
+  // create paramaters List
+  const parameters = {
+    params: parametersArray.join(",")
   };
 
-  const parameters = {
-    params: `${id}(columnIndex:0)`
-  };
   try {
-    const response = yield axios.put("/historic", updatedBodyValues, {
-      params: parameters
-    });
+    const response = yield axios.put(
+      "/historic",
+      updatedBodyValues,
+      {
+        params: parameters
+      }
+    );
     yield put(actions.postDataSuccess(response.data.name, action.formData));
   } catch (error) {
     yield put(actions.postDataFailed(error));
   }
-}
-
-/**
- * Convert node rawTimeZone(Zulu zone) from eagle.API to currentTimeZone MOVE TO HELPER FUNCTIONS
- */
-export function convertDataToCurrentTimeZone(
-  nodeSourceTimeZone,
-  parameterTime
-) {
-  const rawTimeZone = moment(parameterTime);
-  const convertedNodeTime = rawTimeZone
-    .tz(nodeSourceTimeZone)
-    .format("l, h:mm:ss a ");
-  return convertedNodeTime;
 }
