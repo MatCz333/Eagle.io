@@ -68,6 +68,7 @@ const styles = theme => ({
 
 class DataInput extends Component {
   state = {
+    isFormValid : false,
     stackElementsSelected: [],
     activeStep: 0
   };
@@ -76,6 +77,17 @@ class DataInput extends Component {
     const { onFetchData } = this.props;
     onFetchData();
   }
+
+  /**
+ * Validates the form, checks if inputs meets the requirements 
+ * enables the submit button if true , disabled otherwise
+ */
+validateForm = () =>{
+  const{isFormValid} = this.state
+  // ToDO
+  this.setState({isFormValid: true})
+  return isFormValid
+}
 
   /**
    * Returns all children of specific parent
@@ -176,6 +188,7 @@ class DataInput extends Component {
             getAllChildrenPerParent={this.getAllChildrenPerParent}
             elementSelected={elementSelected}
             handle={this.handleNext}
+            validateForm={this.validateForm}
           />
         );
       default:
@@ -233,20 +246,23 @@ class DataInput extends Component {
    * default values
    */
   handleResetActiveStep = () => {
-    const { onResetPostStatus } = this.props;
+    const { onResetPostStatus, onFetchData } = this.props;
     // clear global state
     onResetPostStatus();
     // clear local state
     this.setState({
       stackElementsSelected: [],
-      activeStep: 0
+      activeStep: 0,
+      isFormValid: false
     });
+    // synchronize with API
+    onFetchData();
   };
 
   render() {
+    const { activeStep, isFormValid } = this.state;
     const { data, error, fetchLoading, classes, posted } = this.props;
     const steps = this.getSteps();
-    const { activeStep } = this.state;
     let content = <LoadingSkeleton />;
     if (!fetchLoading && data) {
       content = this.getStepContent(activeStep);
@@ -329,6 +345,7 @@ class DataInput extends Component {
               handleBack={this.handleBack}
               activeStep={activeStep}
               handleResetActiveStep={this.handleResetActiveStep}
+              isFormValid={isFormValid}
             />
           </Paper>
         </main>

@@ -38,7 +38,8 @@ function FormControls(props) {
     handleBack,
     error,
     posted,
-    handleResetActiveStep
+    handleResetActiveStep,
+    isFormValid
   } = props;
   const classes = useStyles(props);
   const submitButtonLabel = "SEND";
@@ -88,7 +89,7 @@ function FormControls(props) {
             type="submit"
             variant="contained"
             color="primary"
-            disabled={postLoading}
+            disabled={postLoading || !isFormValid}
           >
             {submitButtonLabel}
             <SendIcon />

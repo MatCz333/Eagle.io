@@ -37,18 +37,18 @@ export function* fetchDataSaga() {
  * A saga that handles asynchronous side effects of posting the data to API
  */
 export function* postDataSaga(action) {
-  const { formData } = action;
-  const { date } = formData;
+  const { formData: {
+    inputConfig
+  } } = action;
+  const {date} =  action.formData
   const parametersArray = [];
   const data = [];
   const values = {};
-  Object.entries(formData).forEach((entries, index) => {
-    if (entries[0] !== "date") {
+  Object.entries(inputConfig).forEach((entries, index) => {
       // get parameters ID'S
       parametersArray.push(`${entries[0]}(columnIndex:${index})`);
       // get values
-      values[index] = { v: parseInt(entries[1], 10) };
-    }
+      values[index] = { v: parseInt(entries[1].currentValue, 10) };
   });
 
   data.push({

@@ -46,6 +46,9 @@ const useStyles = makeStyles(theme => {
       height: 64,
       backgroundRepeat: "no-repeat"
     },
+    gridItem:{
+      flexBasis: "35%"
+    },
     labelWrapper: {
       position: "absolute",
       top: "40%",
@@ -85,7 +88,7 @@ const Choice = props => {
   const classes = useStyles(props);
   const { click, path, textDescription, sprite } = props;
   return (
-    <Grid item xs={5}>
+    <Grid className={classes.gridItem} item xs={5}>
       <Paper className={classes.card}>
         <ButtonBase
           className={classes.buttonBase}

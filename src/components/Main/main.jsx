@@ -48,7 +48,7 @@ const useStyles = makeStyles(theme => {
       height: "80%",
       backgroundColor: "transparent",
       position: "absolute",
-      top: "20%"
+      top: "15%"
     }
   };
 });

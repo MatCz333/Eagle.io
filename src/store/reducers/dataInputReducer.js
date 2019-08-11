@@ -51,10 +51,10 @@ const postDataFailed = (state, action) => {
 const updatePostStatus = (state, action) => {
   return updateObject(state, {
     posting: false,
-    fetchLoading: false,
-    postLoading: false,
-    posted: false,
-    error: false
+    data: null,
+    loading: false,
+    error: false,
+    posted: false
   });
 };
 

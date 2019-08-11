@@ -12,50 +12,107 @@ import axios from "../../axios-eagle";
 import DateAndTimePicker from "../DateAndTimePicker";
 
 /** "
- * Responsible for generating form component
+ * Responsible for generating  a data input form component
  *
  */
 
 class InputForm extends Component {
-  state = {};
 
-  componentDidMount() {
-    const { getAllChildrenPerParent, elementSelected } = this.props;
+  constructor(props) {
+    super(props);
+    this.state = {
+      inputConfig: []
+    };
+    const { getAllChildrenPerParent, elementSelected } = props;
     const model = getAllChildrenPerParent(elementSelected);
+    const inputConfig = {}
+    // setting initial state for each parameter
     model.forEach(parameter => {
-      this.setState({ [parameter._id]: parameter.currentValue });
+      inputConfig[parameter._id] = {
+      time : parameter.currentTime,
+      units : parameter.units,
+      defaultValue: parameter.currentValue,
+      name: parameter.name,
+      currentValue: parameter.currentValue,
+      focused: false
+      }
     });
+   this.state.inputConfig = inputConfig
   }
 
-  inputResetHandler = name => {
-    this.setState({ [name]: "" });
-  };
-
   inputChangedHandler = (event, date) => {
+    const{validateForm} = this.props
+    const{inputConfig} = this.state
     if (date) {
       this.setState({ date });
       return;
     }
-    const { name, value } = event.currentTarget;
-    this.setState({ [name]: value });
+    const { value, id} = event.currentTarget;
+    // get back default value when input is blank
+    if(value === ""){
+      this.setState(prevState => ({
+        ...prevState,
+        inputConfig: {
+          ...inputConfig,
+          [id]:{
+            ...prevState.inputConfig[id],
+                currentValue: ""
+          }
+        }}))
+    } else {
+      this.setState(prevState => ({
+        ...prevState,
+        inputConfig: {
+          ...inputConfig,
+          [id]:{
+            ...prevState.inputConfig[id],
+                currentValue: value
+          }
+        }}))
+    }
+    validateForm()
   };
 
-  inputClickedHandler = element => {
-    const { _id } = element;
-    if (this.state[_id]) this.inputResetHandler(_id);
-  };
 
   postDataHandler = () => {
     const { ...rest } = this.state;
-    this.props.onPostData(rest);
+    const {onPostData} = this.props
+    onPostData(rest);
   };
 
+  onBlurHandler = event =>{
+    const{inputConfig} = this.state
+    const { id} = event.currentTarget;
+    this.setState(prevState => ({
+      ...prevState,
+      inputConfig: {
+        ...inputConfig,
+        [id]:{
+          ...prevState.inputConfig[id],
+          focused: false
+        }
+      }}))
+  }
+
+  onFocusHandler  = event =>{
+    const{inputConfig} = this.state
+    const {  id} = event.currentTarget;
+    this.setState(prevState => ({
+      ...prevState,
+      inputConfig: {
+        ...inputConfig,
+        [id]:{
+          ...prevState.inputConfig[id],
+          focused: true
+        }
+      }}))
+  }
+
   renderForm = elementSelected => {
-    const { getAllChildrenPerParent } = this.props;
-    const model = getAllChildrenPerParent(elementSelected);
-    const parameterValues = model.map(parameter => {
+    const{ inputConfig} = this.state;
+    const parameterValues = Object.entries(inputConfig).map(parameter => {
       return (
-        <React.Fragment key={parameter._id}>
+        <React.Fragment key={parameter[0]}>
           <Grid
             style={{
               paddingBottom: "20px"
@@ -64,24 +121,27 @@ class InputForm extends Component {
             xs={12}
           >
             <TextField
+            onBlur={this.onBlurHandler}
+            onFocus={this.onFocusHandler}
+            fullWidth
+            value={(!parameter[1].focused && !parameter[1].currentValue ? parameter[1].defaultValue: parameter[1].currentValue)}
+            type="number"
               inputRef={element => {
-                this[parameter._id] = element;
+                this[parameter[1].name] = element;
               }}
-              name={parameter._id}
+              name={parameter[1].name}
               onChange={this.inputChangedHandler}
-              onClick={this.inputClickedHandler}
-              id="outlined-adornment-weight"
+              id={parameter[0]}
               variant="outlined"
-              label={parameter.name}
-              defaultValue={parameter.currentValue}
+              label={parameter[1].name}
               helperText={`Last value from ${convertDataToCurrentTimeZone(
                 elementSelected.timezone,
-                parameter.currentTime
+                parameter[1].time
               )}`}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
-                    {parameter.units}
+                    {parameter[1].units}
                   </InputAdornment>
                 )
               }}
