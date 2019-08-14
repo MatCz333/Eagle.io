@@ -48,7 +48,7 @@ class WorkspaceList extends Component {
       <div>
         <ListItem
           disabled={
-            !!(workspace.children === undefined || workspace.chiildren === 0)
+            !!(workspace.children === undefined || workspace.children === 0)
           }
           key={workspace._id}
           button
