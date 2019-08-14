@@ -28,6 +28,7 @@ const useStyles = makeStyles(theme => {
 });
 
 export default function SideBar(props) {
+  // eslint-disable-next-line react/prop-types
   const { click } = props;
   const choicesArray = Object.keys(CHOICES).map(choice => {
     return [choice, CHOICES[choice]];
@@ -35,6 +36,7 @@ export default function SideBar(props) {
   const classes = useStyles();
   const entered = true;
   let timeout = 0;
+  // eslint-disable-next-line react/display-name
   const navLink = React.forwardRef((itemProps, ref) => (
     // with react-router-dom@^5.0.0 use `ref` instead of `innerRef`
     <NavLink activeClassName={classes.active} {...itemProps} innerRef={ref} />
@@ -46,7 +48,7 @@ export default function SideBar(props) {
       </div>
       <Divider />
       <List>
-        {choicesArray.map((choice, index) => {
+        {choicesArray.map((choice) => {
           timeout += 300;
           const IconComponent = choice[1].drawerIcon;
           return (

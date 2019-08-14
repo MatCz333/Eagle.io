@@ -46,6 +46,9 @@ const useStyles = makeStyles(theme => {
       height: 64,
       backgroundRepeat: "no-repeat"
     },
+    gridItem:{
+      flexBasis: "35%"
+    },
     labelWrapper: {
       position: "absolute",
       top: "40%",
@@ -66,6 +69,7 @@ const useStyles = makeStyles(theme => {
  * Component that renders animated svg for particular option
  */
 const IconSprite = props => {
+  // eslint-disable-next-line react/prop-types
   const { sprite } = props;
   return (
     <div
@@ -85,7 +89,7 @@ const Choice = props => {
   const classes = useStyles(props);
   const { click, path, textDescription, sprite } = props;
   return (
-    <Grid item xs={5}>
+    <Grid className={classes.gridItem} item xs={5}>
       <Paper className={classes.card}>
         <ButtonBase
           className={classes.buttonBase}
@@ -112,6 +116,7 @@ const Choice = props => {
 Choice.propTypes = {
   click: PropTypes.func.isRequired,
   path: PropTypes.string.isRequired,
-  textDescription: PropTypes.string.isRequired
+  textDescription: PropTypes.string.isRequired,
+  sprite:PropTypes.string.isRequired
 };
 export default Choice;

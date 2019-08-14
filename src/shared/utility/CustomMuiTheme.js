@@ -3,6 +3,7 @@ import red from "@material-ui/core/colors/red";
 
 // Customized theme provider for the application
 // https://material-ui.com/customization/themes/#createmuitheme-options-theme
+// eslint-disable-next-line import/no-mutable-exports
 let theme = createMuiTheme({
   overrides: {
     MuiListSubheader: {

@@ -5,8 +5,6 @@ import { withRouter } from "react-router-dom";
 import { makeStyles } from "@material-ui/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import IconButton from "@material-ui/core/IconButton";
 import BackNavigationArrowIcon from "@material-ui/icons/ArrowBackIos";
 import Button from "@material-ui/core/Button";
 
@@ -53,6 +51,12 @@ const NavBar = props => {
 };
 
 NavBar.propTypes = {
-  name: PropTypes.string.isRequired
+  name: PropTypes.string.isRequired,
+  history: PropTypes.shape({
+    length: PropTypes.number,
+    action: PropTypes.string,
+    goBack: PropTypes.func.isRequired
+  }).isRequired,
+
 };
 export default withRouter(NavBar);

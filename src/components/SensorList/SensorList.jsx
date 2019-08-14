@@ -41,5 +41,9 @@ const SensorList = props => {
     </React.Fragment>
   );
 };
-
+SensorList.propTypes={
+  elementSelected:PropTypes.shape({}).isRequired,
+  getAllChildrenPerParent:PropTypes.func.isRequired,
+  handleNext:PropTypes.func.isRequired
+}
 export default SensorList;

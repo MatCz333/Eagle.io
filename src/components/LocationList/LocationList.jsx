@@ -4,7 +4,6 @@ import ListItemText from "@material-ui/core/ListItemText";
 import LocationOn from "@material-ui/icons/LocationOn";
 import PropTypes from "prop-types";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
-import withToolTip from "../../hoc/withToolTip/withToolTip";
 
 const LocationList = props => {
   const { elementSelected, getAllChildrenPerParent, handleNext } = props;
@@ -18,6 +17,7 @@ const LocationList = props => {
             )
           }
           onClick={() => handleNext(location)}
+          // eslint-disable-next-line no-underscore-dangle
           key={location._id}
           button
         >
@@ -38,5 +38,9 @@ const LocationList = props => {
     </React.Fragment>
   );
 };
-
+LocationList.propTypes= {
+  elementSelected:PropTypes.shape({}).isRequired,
+  getAllChildrenPerParent:PropTypes.func.isRequired,
+  handleNext:PropTypes.func.isRequired
+}
 export default LocationList;

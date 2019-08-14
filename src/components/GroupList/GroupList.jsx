@@ -4,7 +4,6 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import List from "@material-ui/core/List";
 import ListSubheader from "@material-ui/core/ListSubheader";
-import Avatar from "@material-ui/core/Avatar";
 import PropTypes from "prop-types";
 import Group from "mdi-material-ui/Group";
 import useStyles from "./GroupListStyles";
@@ -20,7 +19,7 @@ const GroupList = props => {
     <List
       subheader={
         <ListSubheader className={classes.nested} component="div">
-          {workspace.name}'s groups:
+          {workspace.name}&apos;s groups:
         </ListSubheader>
       }
       dense
@@ -43,6 +42,16 @@ const GroupList = props => {
 
 GroupList.propTypes = {
   click: PropTypes.func.isRequired,
-  getAllChildrenPerParent: PropTypes.func.isRequired
+  getAllChildrenPerParent: PropTypes.func.isRequired,
+  workspace:PropTypes.shape({
+    children: PropTypes.arrayOf(PropTypes.object),
+createdTime: PropTypes.string,
+isActive: PropTypes.bool,
+metadata: PropTypes.array,
+name: PropTypes.string,
+ownerId: PropTypes.string,
+_class: PropTypes.string,
+_id: PropTypes.string,
+  }).isRequired
 };
 export default GroupList;

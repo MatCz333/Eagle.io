@@ -17,7 +17,7 @@ import WorkspaceList from "../../components/WorkspaceList/WorkspaceList";
 import SensorList from "../../components/SensorList/SensorList";
 import InputForm from "../../components/InputForm/InputForm";
 import FormControls from "../../components/FormControls";
-import SuccesfulPostDataIcon from "../../assets/successfulPostDataIcon.svg";
+import SuccessfulPostDataIcon from "../../assets/successfulPostDataIcon.svg";
 import FailedPostDataIcon from "../../assets/failedPostDataIcon.svg";
 
 const styles = theme => ({
@@ -68,6 +68,7 @@ const styles = theme => ({
 
 class DataInput extends Component {
   state = {
+    isFormValid : false,
     stackElementsSelected: [],
     activeStep: 0
   };
@@ -78,12 +79,23 @@ class DataInput extends Component {
   }
 
   /**
+ * Validates the form, checks if inputs meets the requirements 
+ * enables the submit button if true , disabled otherwise
+ */
+validateForm = () =>{
+  const{isFormValid} = this.state
+  // ToDO
+  this.setState({isFormValid: true})
+  return isFormValid
+}
+
+  /**
    * Returns all children of specific parent
    * @param Object parent to check if has children objects nested inside
    * @param String classType a type of child that we want to find.
    * @returns Array of parent children
    */
-  getAllChildrenPerParent = (parent, classType) => {
+  getAllChildrenPerParent = (parent) => {
     const childsArray = [];
     if (parent.children !== undefined) {
       parent.children.forEach(child => {
@@ -176,6 +188,7 @@ class DataInput extends Component {
             getAllChildrenPerParent={this.getAllChildrenPerParent}
             elementSelected={elementSelected}
             handle={this.handleNext}
+            validateForm={this.validateForm}
           />
         );
       default:
@@ -214,6 +227,7 @@ class DataInput extends Component {
       stackElementsSelected: state.stackElementsSelected.concat(element),
       activeStep: activeStep + 1
     }));
+    return null;
   };
 
   /**
@@ -233,20 +247,24 @@ class DataInput extends Component {
    * default values
    */
   handleResetActiveStep = () => {
-    const { onResetPostStatus } = this.props;
+    const { onResetPostStatus, onFetchData } = this.props;
     // clear global state
     onResetPostStatus();
     // clear local state
     this.setState({
       stackElementsSelected: [],
-      activeStep: 0
+      activeStep: 0,
+      isFormValid: false
     });
+    // synchronize with API
+    onFetchData();
   };
 
   render() {
+    const { activeStep, isFormValid } = this.state;
+    // eslint-disable-next-line react/prop-types
     const { data, error, fetchLoading, classes, posted } = this.props;
     const steps = this.getSteps();
-    const { activeStep } = this.state;
     let content = <LoadingSkeleton />;
     if (!fetchLoading && data) {
       content = this.getStepContent(activeStep);
@@ -284,7 +302,7 @@ class DataInput extends Component {
         <React.Fragment>
           <img
             className={classes.postDataIcon}
-            src={SuccesfulPostDataIcon}
+            src={SuccessfulPostDataIcon}
             alt="succesful post data icon"
           />
           <Typography align="center" variant="h4" className={classes.result}>
@@ -295,7 +313,7 @@ class DataInput extends Component {
             variant="h6"
             className={classes.description}
           >
-            The parameters have been succesfully changed
+            The parameters have been successfully changed
           </Typography>
         </React.Fragment>
       );
@@ -329,6 +347,7 @@ class DataInput extends Component {
               handleBack={this.handleBack}
               activeStep={activeStep}
               handleResetActiveStep={this.handleResetActiveStep}
+              isFormValid={isFormValid}
             />
           </Paper>
         </main>
@@ -358,8 +377,15 @@ export default connect(
   mapDispatchToProps
 )(withStyles(styles)(DataInput));
 
+DataInput.defaultProps={
+  data:null,
+  fetchLoading:false
+}
 DataInput.propTypes = {
   onFetchData: PropTypes.func.isRequired,
-  loading: PropTypes.bool.isRequired,
-  error: PropTypes.bool.isRequired
+  error: PropTypes.bool.isRequired,
+  data:PropTypes.arrayOf(PropTypes.object),
+  onResetPostStatus:PropTypes.func.isRequired,
+  fetchLoading: PropTypes.bool,
+  posted:PropTypes.bool.isRequired
 };
