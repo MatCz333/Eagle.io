@@ -38,11 +38,6 @@ function DateAndTimePicker(props) {
               </InputAdornment>
             ),
           }}
-<<<<<<< HEAD
-=======
-          // eslint-disable-next-line no-console
->>>>>>> eaf8a5fc452088e96e6dece8b34609f6d3f2b9c5
-          onError={console.log}
         />
       </MuiPickersUtilsProvider>
     </>

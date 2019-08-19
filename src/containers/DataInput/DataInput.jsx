@@ -262,10 +262,7 @@ validateForm = () =>{
 
   render() {
     const { activeStep, isFormValid } = this.state;
-<<<<<<< HEAD
-=======
     // eslint-disable-next-line react/prop-types
->>>>>>> eaf8a5fc452088e96e6dece8b34609f6d3f2b9c5
     const { data, error, fetchLoading, classes, posted } = this.props;
     const steps = this.getSteps();
     let content = <LoadingSkeleton />;
