@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import SendIcon from "@material-ui/icons/CloudUpload";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
@@ -114,6 +115,19 @@ const mapStateToProps = state => {
   };
 };
 
+FormControls.defaultProps = {
+  postLoading: false
+};
+FormControls.propTypes = {
+  postLoading: PropTypes.bool,
+  activeStep: PropTypes.number.isRequired,
+  handleBack: PropTypes.func.isRequired,
+  posted: PropTypes.bool.isRequired,
+  error: PropTypes.bool.isRequired,
+  handleResetActiveStep: PropTypes.func.isRequired,
+  isFormValid: PropTypes.bool.isRequired,
+  onPostDataInit: PropTypes.func.isRequired
+};
 export default connect(
   mapStateToProps,
   mapDispatchToProps

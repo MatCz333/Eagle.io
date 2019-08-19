@@ -69,6 +69,7 @@ const useStyles = makeStyles(theme => {
  * Component that renders animated svg for particular option
  */
 const IconSprite = props => {
+  // eslint-disable-next-line react/prop-types
   const { sprite } = props;
   return (
     <div
@@ -115,6 +116,7 @@ const Choice = props => {
 Choice.propTypes = {
   click: PropTypes.func.isRequired,
   path: PropTypes.string.isRequired,
-  textDescription: PropTypes.string.isRequired
+  textDescription: PropTypes.string.isRequired,
+  sprite:PropTypes.string.isRequired
 };
 export default Choice;

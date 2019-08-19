@@ -17,7 +17,7 @@ import WorkspaceList from "../../components/WorkspaceList/WorkspaceList";
 import SensorList from "../../components/SensorList/SensorList";
 import InputForm from "../../components/InputForm/InputForm";
 import FormControls from "../../components/FormControls";
-import SuccesfulPostDataIcon from "../../assets/successfulPostDataIcon.svg";
+import SuccessfulPostDataIcon from "../../assets/successfulPostDataIcon.svg";
 import FailedPostDataIcon from "../../assets/failedPostDataIcon.svg";
 
 const styles = theme => ({
@@ -95,7 +95,7 @@ validateForm = () =>{
    * @param String classType a type of child that we want to find.
    * @returns Array of parent children
    */
-  getAllChildrenPerParent = (parent, classType) => {
+  getAllChildrenPerParent = (parent) => {
     const childsArray = [];
     if (parent.children !== undefined) {
       parent.children.forEach(child => {
@@ -227,6 +227,7 @@ validateForm = () =>{
       stackElementsSelected: state.stackElementsSelected.concat(element),
       activeStep: activeStep + 1
     }));
+    return null;
   };
 
   /**
@@ -261,6 +262,10 @@ validateForm = () =>{
 
   render() {
     const { activeStep, isFormValid } = this.state;
+<<<<<<< HEAD
+=======
+    // eslint-disable-next-line react/prop-types
+>>>>>>> eaf8a5fc452088e96e6dece8b34609f6d3f2b9c5
     const { data, error, fetchLoading, classes, posted } = this.props;
     const steps = this.getSteps();
     let content = <LoadingSkeleton />;
@@ -300,7 +305,7 @@ validateForm = () =>{
         <React.Fragment>
           <img
             className={classes.postDataIcon}
-            src={SuccesfulPostDataIcon}
+            src={SuccessfulPostDataIcon}
             alt="succesful post data icon"
           />
           <Typography align="center" variant="h4" className={classes.result}>
@@ -311,7 +316,7 @@ validateForm = () =>{
             variant="h6"
             className={classes.description}
           >
-            The parameters have been succesfully changed
+            The parameters have been successfully changed
           </Typography>
         </React.Fragment>
       );
@@ -375,8 +380,15 @@ export default connect(
   mapDispatchToProps
 )(withStyles(styles)(DataInput));
 
+DataInput.defaultProps={
+  data:null,
+  fetchLoading:false
+}
 DataInput.propTypes = {
   onFetchData: PropTypes.func.isRequired,
-  loading: PropTypes.bool.isRequired,
-  error: PropTypes.bool.isRequired
+  error: PropTypes.bool.isRequired,
+  data:PropTypes.arrayOf(PropTypes.object),
+  onResetPostStatus:PropTypes.func.isRequired,
+  fetchLoading: PropTypes.bool,
+  posted:PropTypes.bool.isRequired
 };

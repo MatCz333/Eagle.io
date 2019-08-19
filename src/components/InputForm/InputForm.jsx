@@ -1,5 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import React, { Component } from "react";
+import PropTypes from 'prop-types';
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
@@ -236,7 +237,14 @@ const mapDispatchToProps = dispatch => {
     onPostData: formData => dispatch(actions.postDataStarted(formData))
   };
 };
+InputForm.propTypes={
+  elementSelected:PropTypes.shape({}).isRequired,
+  getAllChildrenPerParent:PropTypes.func.isRequired,
+  validateForm:PropTypes.func.isRequired,
+  onPostData:PropTypes.func.isRequired,
+  posting:PropTypes.bool.isRequired,
 
+}
 export default connect(
   mapStateToProps,
   mapDispatchToProps

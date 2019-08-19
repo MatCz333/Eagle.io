@@ -8,7 +8,6 @@ import Hidden from "@material-ui/core/Hidden";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
 import { connect } from "react-redux";
 import SideBar from "../../components/SideBar";
 import * as actions from "../../store/actions/index";
@@ -56,10 +55,8 @@ const useStyles = makeStyles(theme => {
  * for both mobile and web application
  */
 function Layout(props) {
-  const [open, setOpen] = React.useState(false);
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const theme = useTheme();
-  const { container } = props;
   const classes = useStyles(props);
   const { children, location } = props;
 
@@ -67,13 +64,7 @@ function Layout(props) {
     setMobileOpen(!mobileOpen);
   };
 
-  function handleDrawerOpen() {
-    setOpen(true);
-  }
-
-  function handleDrawerClose() {
-    setOpen(false);
-  }
+ 
   const onClickListItem = () => {
     const { onChangeView } = props;
     onChangeView();
@@ -100,7 +91,6 @@ function Layout(props) {
              MOBILE VIEW */}
             <Hidden smUp implementation="css">
               <Drawer
-                container={container}
                 anchor={theme.direction === "rtl" ? "right" : "left"}
                 variant="temporary"
                 classes={{
@@ -143,9 +133,14 @@ const mapDispatchToProps = dispatch => {
 
 Layout.defaultProps = {
   children: null
+  
 };
 Layout.propTypes = {
-  children: PropTypes.element
+  children: PropTypes.element,
+  location: PropTypes.shape({
+    pathname:PropTypes.string.isRequired
+  }).isRequired,
+  onChangeView:PropTypes.func.isRequired
 };
 
 export default connect(

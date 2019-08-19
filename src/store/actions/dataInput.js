@@ -53,7 +53,6 @@ export const postDataFailed = error => {
 };
 
 export const updatePostStatus = () => {
-  console.log("action");
   return {
     type: actionTypes.UPDATE_POST_STATUS
   };

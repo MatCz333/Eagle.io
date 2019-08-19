@@ -7,6 +7,7 @@ function withToolTip(WrappedComponent) {
       props.parent.children.length === 0
       ? [
           <Tooltip
+            // eslint-disable-next-line no-underscore-dangle
             key={props.parent._id}
             title={`${props.parent.name} does not have any children`}
           >
