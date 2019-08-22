@@ -1,4 +1,4 @@
-/* eslint-disable import/prefer-default-export */
+
 /**
  * Contains all actions bundled together
  */
@@ -14,3 +14,4 @@ export {
   postDataInit,
   updatePostStatus
 } from "./dataInput";
+export {handleHTTPError} from "./errorHandlerActions"

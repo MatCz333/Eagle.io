@@ -37,7 +37,7 @@ function FormControls(props) {
     postLoading,
     activeStep,
     handleBack,
-    error,
+    showError,
     posted,
     handleResetActiveStep,
     isFormValid
@@ -47,7 +47,7 @@ function FormControls(props) {
   return (
     <Grid spacing={6} container justify="space-between">
       {/** Display back to menu button */}
-      {error || posted ? (
+      {showError || posted ? (
         <Grid
           item
           style={{
@@ -68,7 +68,7 @@ function FormControls(props) {
       ) : null}
       {/** Display back button */}
       <Grid item className={classes.buttonGridLayout}>
-        {activeStep === 0 || (error || posted) ? null : (
+        {activeStep === 0 || (showError || posted) ? null : (
           <Button
             size="large"
             className={classes.button}
@@ -82,7 +82,7 @@ function FormControls(props) {
       </Grid>
       {/** Display submit button */}
       <Grid item className={classes.buttonGridLayout}>
-        {activeStep === 3 && (!error && !posted) ? (
+        {activeStep === 3 && (!showError && !posted) ? (
           <Button
             className={classes.button}
             onClick={() => props.onPostDataInit()}
@@ -111,6 +111,7 @@ const mapDispatchToProps = dispatch => {
 };
 const mapStateToProps = state => {
   return {
+    showError: state.errorHandlerReducer.showError,
     postLoading: state.dataInputReducer.postLoading
   };
 };
@@ -123,7 +124,7 @@ FormControls.propTypes = {
   activeStep: PropTypes.number.isRequired,
   handleBack: PropTypes.func.isRequired,
   posted: PropTypes.bool.isRequired,
-  error: PropTypes.bool.isRequired,
+  showError: PropTypes.bool.isRequired,
   handleResetActiveStep: PropTypes.func.isRequired,
   isFormValid: PropTypes.bool.isRequired,
   onPostDataInit: PropTypes.func.isRequired

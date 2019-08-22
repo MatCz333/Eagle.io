@@ -7,7 +7,6 @@ const initialState = {
   posting: false,
   data: null,
   loading: false,
-  error: false,
   posted: false,
   history: null
 };
@@ -33,8 +32,7 @@ const postDataSuccess = (state) => {
     fetchLoading: false,
     postLoading: false,
     posting: false,
-    posted: true,
-    error: false
+    posted: true
   });
 };
 
@@ -43,8 +41,7 @@ const postDataFailed = (state) => {
     posting: false,
     fetchLoading: false,
     postLoading: false,
-    posted: false,
-    error: true
+    posted: false
   });
 };
 
@@ -53,7 +50,6 @@ const updatePostStatus = (state) => {
     posting: false,
     data: null,
     loading: false,
-    error: false,
     posted: false
   });
 };
@@ -66,14 +62,12 @@ const fetchDataSuccess = (state, action) => {
   return updateObject(state, {
     data: action.data,
     fetchLoading: false,
-    postLoading: false,
-    error: false
+    postLoading: false
   });
 };
 
 const fetchDataFailed = state => {
   return updateObject(state, {
-    error: true,
     fetchLoading: false,
     postLoading: false
   });
@@ -81,7 +75,6 @@ const fetchDataFailed = state => {
 
 const fetchDataStarted = state => {
   return updateObject(state, {
-    error: false,
     fetchLoading: true,
     postLoading: false
   });

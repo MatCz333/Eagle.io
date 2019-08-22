@@ -18,7 +18,7 @@ import SensorList from "../../components/SensorList/SensorList";
 import InputForm from "../../components/InputForm/InputForm";
 import FormControls from "../../components/FormControls";
 import SuccessfulPostDataIcon from "../../assets/successfulPostDataIcon.svg";
-import FailedPostDataIcon from "../../assets/failedPostDataIcon.svg";
+import GenericError from "../../components/ErrorPages/GenericError";
 
 const styles = theme => ({
   layout: {
@@ -75,7 +75,7 @@ class DataInput extends Component {
 
   componentDidMount() {
     const { onFetchData } = this.props;
-    onFetchData();
+    onFetchData({...this.props});
   }
 
   /**
@@ -263,7 +263,7 @@ validateForm = () =>{
   render() {
     const { activeStep, isFormValid } = this.state;
     // eslint-disable-next-line react/prop-types
-    const { data, error, fetchLoading, classes, posted } = this.props;
+    const { data, code, errorMessage, showError, fetchLoading, classes, posted } = this.props;
     const steps = this.getSteps();
     let content = <LoadingSkeleton />;
     if (!fetchLoading && data) {
@@ -272,27 +272,10 @@ validateForm = () =>{
     /**
      * POST DATA FAILED (ERROR VIEW)
      */
-    if (error) {
+    if (showError) {
       content = (
-        <React.Fragment>
-          <img
-            className={classes.postDataIcon}
-            src={FailedPostDataIcon}
-            alt="failed post data icon"
-          />
-          <Typography align="center" variant="h4" className={classes.result}>
-            ERROR
-          </Typography>
-          <Typography
-            align="center"
-            variant="h6"
-            className={classes.description}
-          >
-            Something went wrong. The parameters have not been succesfully
-            changed. Please try again.
-          </Typography>
-        </React.Fragment>
-      );
+      <GenericError errorCode={code} errorMessage={errorMessage}></GenericError>
+      )
     }
     /**
      * POST DATA SUCCESS (SUCCESS VIEW)
@@ -322,7 +305,7 @@ validateForm = () =>{
       <React.Fragment>
         <main className={classes.layout}>
           <Paper className={classes.paper}>
-            {posted || error ? null : (
+            {posted || showError ? null : (
               <React.Fragment>
                 <Typography align="center" variant="h4">
                   DATA INPUT
@@ -342,7 +325,7 @@ validateForm = () =>{
             )}
             {content}
             <FormControls
-              error={error}
+              error={showError}
               posted={posted}
               handleBack={this.handleBack}
               activeStep={activeStep}
@@ -361,14 +344,16 @@ const mapStateToProps = state => {
     posted: state.dataInputReducer.posted,
     fetchLoading: state.dataInputReducer.fetchLoading,
     data: state.dataInputReducer.data,
-    error: state.dataInputReducer.error
+    errorMessage: state.errorHandlerReducer.errorMessage,
+    code: state.errorHandlerReducer.code,
+    showError: state.errorHandlerReducer.showError
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     onResetPostStatus: () => dispatch(actions.updatePostStatus()),
-    onFetchData: () => dispatch(actions.fetchDataStarted())
+    onFetchData: (props) => dispatch(actions.fetchDataStarted(props))
   };
 };
 
@@ -383,7 +368,7 @@ DataInput.defaultProps={
 }
 DataInput.propTypes = {
   onFetchData: PropTypes.func.isRequired,
-  error: PropTypes.bool.isRequired,
+  showError: PropTypes.bool.isRequired,
   data:PropTypes.arrayOf(PropTypes.object),
   onResetPostStatus:PropTypes.func.isRequired,
   fetchLoading: PropTypes.bool,

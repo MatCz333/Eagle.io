@@ -2,8 +2,9 @@ import * as actionTypes from "./actionTypes";
 
 /** Actions for dataInput view */
 
-export const fetchDataStarted = () => {
+export const fetchDataStarted = (props) => {
   return {
+    props,
     type: actionTypes.FETCH_DATA_STARTED
   };
 };

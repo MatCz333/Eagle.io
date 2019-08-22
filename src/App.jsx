@@ -8,6 +8,8 @@ import Layout from "./hoc/Layout/Layout";
 import theme from "./shared/utility/CustomMuiTheme";
 import Main from "./components/Main/main";
 import DataInput from "./containers/DataInput/DataInput";
+import InternalServerError from "./components/ErrorPages/InternalServerError";
+import PageNotFound from "./components/ErrorPages/PageNotFound";
 
 const App = () => (
   <React.Fragment>
@@ -19,6 +21,8 @@ const App = () => (
           <Route path="/main" component={Main} />
           <Route path="/login" component={LogIn} />
           <Route path="/" exact component={LogIn} />
+          <Route path="/500" component={InternalServerError}/>
+          <Route path="*" component={PageNotFound}/>
         </Switch>
       </Layout>
     </ThemeProvider>

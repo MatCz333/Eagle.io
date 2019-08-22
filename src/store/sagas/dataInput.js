@@ -23,16 +23,34 @@ function getNestedChildren(rawData) {
 /**
  * A saga that handles asynchronous side effects of fetching the data from API
  */
-export function* fetchDataSaga() {
+export function* fetchDataSaga(props) {
   try {
     const response = yield axios.get("/nodes");
     const convertedData = yield getNestedChildren(response.data);
     yield put(actions.fetchDataSuccess(convertedData));
   } catch (error) {
-    yield put(actions.fetchDataFailed(error));
+    if( error.response === undefined) {
+      yield put(actions.handleHTTPError({
+          response:{
+            data:{
+              error:{
+                message: "Network Error: Please check your connection"}
+              }
+            }
+          }
+        ))
+    }
+    else if (error.response.status === 404) {
+      yield props.props.history.push("/404")
+    }
+    else if (error.response.status === 500) {
+      yield props.props.history.push("/500")
+    }
+  yield put(actions.fetchDataFailed())
+   yield put(actions.handleHTTPError(error, props))
   }
 }
-
+  
 /**
  * A saga that handles asynchronous side effects of posting the data to API
  */
@@ -48,7 +66,7 @@ export function* postDataSaga(action) {
       // get parameters ID'S
       parametersArray.push(`${entries[0]}(columnIndex:${index})`);
       // get values
-      values[index] = { v: parseInt(entries[1].currentValue, 10) };
+      values[index] = { v: parseFloat(entries[1].currentValue, 10) };
   });
 
   data.push({
@@ -77,6 +95,7 @@ export function* postDataSaga(action) {
     );
     yield put(actions.postDataSuccess(response.data.name, action.formData));
   } catch (error) {
-    yield put(actions.postDataFailed(error));
+    yield put(actions.postDataFailed())
+    yield put(actions.handleHTTPError(error))
   }
 }

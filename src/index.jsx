@@ -11,6 +11,7 @@ import * as serviceWorker from "./serviceWorker";
 import App from "./App";
 import loginFormReducer from "./store/reducers/loginFormReducer";
 import dataInputReducer from "./store/reducers/dataInputReducer";
+import errorHandlerReducer from "./store/reducers/errorHandlerReducer";
 import watchDataInput from "./store/sagas";
 
 const composeEnhancers =
@@ -20,7 +21,8 @@ const composeEnhancers =
 
 const rootReducer = combineReducers({
   loginReducer: loginFormReducer,
-  dataInputReducer
+  dataInputReducer,
+  errorHandlerReducer
 });
 const sagaMiddleware = createSagaMiddleware();
 
