@@ -1,5 +1,6 @@
 /* eslint-disable no-underscore-dangle */
-import React, { Component } from "react";
+import React from "react";
+import LogLifecycle from "react-log-lifecycle";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
@@ -18,7 +19,8 @@ import SensorList from "../../components/SensorList/SensorList";
 import InputForm from "../../components/InputForm/InputForm";
 import FormControls from "../../components/FormControls";
 import SuccessfulPostDataIcon from "../../assets/successfulPostDataIcon.svg";
-import GenericError from "../../components/ErrorPages/GenericError";
+import FailedPostDataIcon from "../../assets/failedPostDataIcon.svg";
+import Flags from "../../shared/Flags";
 
 const styles = theme => ({
   layout: {
@@ -66,28 +68,31 @@ const styles = theme => ({
  * Container that save the current state of the form
  */
 
-class DataInput extends Component {
-  state = {
-    isFormValid : false,
-    stackElementsSelected: [],
-    activeStep: 0
-  };
+class DataInput extends LogLifecycle {
+  constructor(props) {
+    super(props, Flags);
+    this.state = {
+      isFormValid: false,
+      stackElementsSelected: [],
+      activeStep: 0
+    };
+  }
 
   componentDidMount() {
     const { onFetchData } = this.props;
-    onFetchData({...this.props});
+    onFetchData();
   }
 
   /**
- * Validates the form, checks if inputs meets the requirements 
- * enables the submit button if true , disabled otherwise
- */
-validateForm = () =>{
-  const{isFormValid} = this.state
-  // ToDO
-  this.setState({isFormValid: true})
-  return isFormValid
-}
+   * Validates the form, checks if inputs meets the requirements
+   * enables the submit button if true , disabled otherwise
+   */
+  validateForm = () => {
+    const { isFormValid } = this.state;
+    // ToDO
+    this.setState({ isFormValid: true });
+    return isFormValid;
+  };
 
   /**
    * Returns all children of specific parent
@@ -95,7 +100,7 @@ validateForm = () =>{
    * @param String classType a type of child that we want to find.
    * @returns Array of parent children
    */
-  getAllChildrenPerParent = (parent) => {
+  getAllChildrenPerParent = parent => {
     const childsArray = [];
     if (parent.children !== undefined) {
       parent.children.forEach(child => {
@@ -261,9 +266,10 @@ validateForm = () =>{
   };
 
   render() {
+    console.log("DataInput render");
     const { activeStep, isFormValid } = this.state;
     // eslint-disable-next-line react/prop-types
-    const { data, code, errorMessage, showError, fetchLoading, classes, posted } = this.props;
+    const { data, error, fetchLoading, classes, posted } = this.props;
     const steps = this.getSteps();
     let content = <LoadingSkeleton />;
     if (!fetchLoading && data) {
@@ -272,10 +278,27 @@ validateForm = () =>{
     /**
      * POST DATA FAILED (ERROR VIEW)
      */
-    if (showError) {
+    if (error) {
       content = (
-      <GenericError errorCode={code} errorMessage={errorMessage}></GenericError>
-      )
+        <React.Fragment>
+          <img
+            className={classes.postDataIcon}
+            src={FailedPostDataIcon}
+            alt="failed post data icon"
+          />
+          <Typography align="center" variant="h4" className={classes.result}>
+            ERROR
+          </Typography>
+          <Typography
+            align="center"
+            variant="h6"
+            className={classes.description}
+          >
+            Something went wrong. The parameters have not been succesfully
+            changed. Please try again.
+          </Typography>
+        </React.Fragment>
+      );
     }
     /**
      * POST DATA SUCCESS (SUCCESS VIEW)
@@ -305,7 +328,7 @@ validateForm = () =>{
       <React.Fragment>
         <main className={classes.layout}>
           <Paper className={classes.paper}>
-            {posted || showError ? null : (
+            {posted || error ? null : (
               <React.Fragment>
                 <Typography align="center" variant="h4">
                   DATA INPUT
@@ -325,7 +348,7 @@ validateForm = () =>{
             )}
             {content}
             <FormControls
-              error={showError}
+              error={error}
               posted={posted}
               handleBack={this.handleBack}
               activeStep={activeStep}
@@ -344,16 +367,14 @@ const mapStateToProps = state => {
     posted: state.dataInputReducer.posted,
     fetchLoading: state.dataInputReducer.fetchLoading,
     data: state.dataInputReducer.data,
-    errorMessage: state.errorHandlerReducer.errorMessage,
-    code: state.errorHandlerReducer.code,
-    showError: state.errorHandlerReducer.showError
+    error: state.dataInputReducer.error
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     onResetPostStatus: () => dispatch(actions.updatePostStatus()),
-    onFetchData: (props) => dispatch(actions.fetchDataStarted(props))
+    onFetchData: () => dispatch(actions.fetchDataStarted())
   };
 };
 
@@ -362,15 +383,15 @@ export default connect(
   mapDispatchToProps
 )(withStyles(styles)(DataInput));
 
-DataInput.defaultProps={
-  data:null,
-  fetchLoading:false
-}
+DataInput.defaultProps = {
+  data: null,
+  fetchLoading: false
+};
 DataInput.propTypes = {
   onFetchData: PropTypes.func.isRequired,
-  showError: PropTypes.bool.isRequired,
-  data:PropTypes.arrayOf(PropTypes.object),
-  onResetPostStatus:PropTypes.func.isRequired,
+  error: PropTypes.bool.isRequired,
+  data: PropTypes.arrayOf(PropTypes.object),
+  onResetPostStatus: PropTypes.func.isRequired,
   fetchLoading: PropTypes.bool,
-  posted:PropTypes.bool.isRequired
+  posted: PropTypes.bool.isRequired
 };
