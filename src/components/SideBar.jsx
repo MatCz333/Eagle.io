@@ -41,15 +41,6 @@ export class Sidebar extends Component {
   return [choice, ROUTES[choice]];});
   }
 
-  reloadDataInput(routeName) {
-   return true
-  }
-  
-  activeRoute(routeName) {
-    const {location} = this.props
-    return location.pathname.indexOf(routeName) > -1;
-  }
-
   componentDidUpdate(){
     const {location, onResetPostStatus, onFetchData} = this.props
     if (location.pathname === "/input"){
@@ -57,6 +48,11 @@ export class Sidebar extends Component {
       onResetPostStatus()
       onFetchData();
   }
+  }
+
+  activeRoute(routeName) {
+    const {location} = this.props
+    return location.pathname.indexOf(routeName) > -1;
   }
 
 
