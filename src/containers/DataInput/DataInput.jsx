@@ -355,9 +355,7 @@ const mapStateToProps = state => {
     posted: state.dataInputReducer.posted,
     fetchLoading: state.dataInputReducer.fetchLoading,
     data: state.dataInputReducer.data,
-    errorMessage: state.errorHandlerReducer.errorMessage,
-    code: state.errorHandlerReducer.code,
-    showError: state.errorHandlerReducer.showError
+    error: state.dataInputReducer.error
   };
 };
 
