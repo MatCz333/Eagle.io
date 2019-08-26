@@ -265,25 +265,28 @@ class DataInput extends Component {
     // eslint-disable-next-line react/prop-types
     const {
       data,
-      code,
+      errorCode,
       errorMessage,
       showError,
-      fetchLoading,
+      loading,
       classes,
       posted
     } = this.props;
+    // Reset steps when clicking same DataInput Route from sideBar
+    if (activeStep !== 0 && data === null) this.handleResetActiveStep();
     const steps = this.getSteps();
     let content = <LoadingSkeleton />;
-    if (!fetchLoading && data) {
+    if (loading !== true && (data === undefined || data !== null)) {
       content = this.getStepContent(activeStep);
     }
+
     /**
      * POST DATA FAILED (ERROR VIEW)
      */
     if (showError) {
       content = (
         <GenericError
-          errorCode={code}
+          errorCode={errorCode}
           errorMessage={errorMessage}
         ></GenericError>
       );
@@ -353,9 +356,11 @@ class DataInput extends Component {
 const mapStateToProps = state => {
   return {
     posted: state.dataInputReducer.posted,
-    fetchLoading: state.dataInputReducer.fetchLoading,
+    loading: state.dataInputReducer.loading,
     data: state.dataInputReducer.data,
-    error: state.dataInputReducer.error
+    showError: state.errorHandlerReducer.showError,
+    errorMessage: state.errorHandlerReducer.errorMessage,
+    errorCode: state.errorHandlerReducer.code
   };
 };
 
@@ -373,13 +378,13 @@ export default connect(
 
 DataInput.defaultProps = {
   data: null,
-  fetchLoading: false
+  loading: false
 };
 DataInput.propTypes = {
   onFetchData: PropTypes.func.isRequired,
   showError: PropTypes.bool.isRequired,
   data: PropTypes.arrayOf(PropTypes.object),
   onResetPostStatus: PropTypes.func.isRequired,
-  fetchLoading: PropTypes.bool,
+  loading: PropTypes.bool,
   posted: PropTypes.bool.isRequired
 };

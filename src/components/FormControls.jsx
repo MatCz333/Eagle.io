@@ -44,6 +44,12 @@ function FormControls(props) {
   } = props;
   const classes = useStyles(props);
   const submitButtonLabel = "SEND";
+  let backToMenuButtonLabel = "BACK TO MENU";
+  if (showError && activeStep === 0) {
+    backToMenuButtonLabel = "REFRESH";
+  } else {
+    backToMenuButtonLabel = "BACK TO MENU";
+  }
   return (
     <Grid spacing={6} container justify="space-between">
       {/** Display back to menu button */}
@@ -62,7 +68,7 @@ function FormControls(props) {
             variant="contained"
             onClick={handleResetActiveStep}
           >
-            BACK TO MENU
+            {backToMenuButtonLabel}
           </Button>
         </Grid>
       ) : null}

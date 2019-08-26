@@ -15,11 +15,10 @@ const initialState = {
  * POST METHODS
  */
 
-const postDataInit = (state) => {
+const postDataInit = state => {
   return updateObject(state, {
     posting: true,
-    fetchLoading: false,
-    postLoading: true
+    loading: false
   });
 };
 
@@ -27,25 +26,25 @@ const postDataStarted = (state, action) => {
   return updateObject(state, action);
 };
 
-const postDataSuccess = (state) => {
+const postDataSuccess = state => {
   return updateObject(state, {
-    fetchLoading: false,
-    postLoading: false,
+    loading: false,
     posting: false,
     posted: true
   });
 };
 
-const postDataFailed = (state) => {
+const postDataFailed = state => {
   return updateObject(state, {
     posting: false,
-    fetchLoading: false,
-    postLoading: false,
+    loading: false,
     posted: false
   });
 };
-
-const updatePostStatus = (state) => {
+/**
+ * RESET METHODS
+ */
+const updatePostStatus = state => {
   return updateObject(state, {
     posting: false,
     data: null,
@@ -61,22 +60,19 @@ const updatePostStatus = (state) => {
 const fetchDataSuccess = (state, action) => {
   return updateObject(state, {
     data: action.data,
-    fetchLoading: false,
-    postLoading: false
+    loading: false
   });
 };
 
 const fetchDataFailed = state => {
   return updateObject(state, {
-    fetchLoading: false,
-    postLoading: false
+    loading: false
   });
 };
 
 const fetchDataStarted = state => {
   return updateObject(state, {
-    fetchLoading: true,
-    postLoading: false
+    loading: true
   });
 };
 

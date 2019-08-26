@@ -45,9 +45,10 @@ export function* fetchDataSaga(props) {
       yield props.props.history.push("/404");
     } else if (error.response.status === 500) {
       yield props.props.history.push("/500");
+    } else {
+      yield put(actions.handleHTTPError(error, props));
     }
     yield put(actions.fetchDataFailed());
-    yield put(actions.handleHTTPError(error, props));
   }
 }
 
@@ -64,12 +65,13 @@ export function* postDataSaga(action) {
   const values = {};
   Object.entries(inputConfig).forEach((entries, index) => {
     // if input was checked process further
-    if(entries[1].checked){
-    // get parameters ID'S
-    parametersArray.push(`${entries[0]}(columnIndex:${index})`);
-    // get values
-    values[index] = { v: parseFloat(entries[1].currentValue, 10) };
-  }});
+    if (entries[1].checked) {
+      // get parameters ID'S
+      parametersArray.push(`${entries[0]}(columnIndex:${index})`);
+      // get values
+      values[index] = { v: parseFloat(entries[1].currentValue, 10) };
+    }
+  });
 
   data.push({
     ts: moment(date).toISOString(),
