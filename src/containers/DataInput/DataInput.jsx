@@ -68,26 +68,26 @@ const styles = theme => ({
 
 class DataInput extends Component {
   state = {
-    isFormValid : false,
+    isFormValid: false,
     stackElementsSelected: [],
     activeStep: 0
   };
 
   componentDidMount() {
     const { onFetchData } = this.props;
-    onFetchData({...this.props});
+    onFetchData({ ...this.props });
   }
 
   /**
- * Validates the form, checks if inputs meets the requirements 
- * enables the submit button if true , disabled otherwise
- */
-validateForm = () =>{
-  const{isFormValid} = this.state
-  // ToDO
-  this.setState({isFormValid: true})
-  return isFormValid
-}
+   * Validates the form, checks if inputs meets the requirements
+   * enables the submit button if true , disabled otherwise
+   */
+  validateForm = () => {
+    const { isFormValid } = this.state;
+    // ToDO
+    this.setState({ isFormValid: true });
+    return isFormValid;
+  };
 
   /**
    * Returns all children of specific parent
@@ -95,7 +95,7 @@ validateForm = () =>{
    * @param String classType a type of child that we want to find.
    * @returns Array of parent children
    */
-  getAllChildrenPerParent = (parent) => {
+  getAllChildrenPerParent = parent => {
     const childsArray = [];
     if (parent.children !== undefined) {
       parent.children.forEach(child => {
@@ -263,7 +263,15 @@ validateForm = () =>{
   render() {
     const { activeStep, isFormValid } = this.state;
     // eslint-disable-next-line react/prop-types
-    const { data, code, errorMessage, showError, fetchLoading, classes, posted } = this.props;
+    const {
+      data,
+      code,
+      errorMessage,
+      showError,
+      fetchLoading,
+      classes,
+      posted
+    } = this.props;
     const steps = this.getSteps();
     let content = <LoadingSkeleton />;
     if (!fetchLoading && data) {
@@ -274,8 +282,11 @@ validateForm = () =>{
      */
     if (showError) {
       content = (
-      <GenericError errorCode={code} errorMessage={errorMessage}></GenericError>
-      )
+        <GenericError
+          errorCode={code}
+          errorMessage={errorMessage}
+        ></GenericError>
+      );
     }
     /**
      * POST DATA SUCCESS (SUCCESS VIEW)
@@ -353,7 +364,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onResetPostStatus: () => dispatch(actions.updatePostStatus()),
-    onFetchData: (props) => dispatch(actions.fetchDataStarted(props))
+    onFetchData: props => dispatch(actions.fetchDataStarted(props))
   };
 };
 
@@ -362,15 +373,15 @@ export default connect(
   mapDispatchToProps
 )(withStyles(styles)(DataInput));
 
-DataInput.defaultProps={
-  data:null,
-  fetchLoading:false
-}
+DataInput.defaultProps = {
+  data: null,
+  fetchLoading: false
+};
 DataInput.propTypes = {
   onFetchData: PropTypes.func.isRequired,
   showError: PropTypes.bool.isRequired,
-  data:PropTypes.arrayOf(PropTypes.object),
-  onResetPostStatus:PropTypes.func.isRequired,
+  data: PropTypes.arrayOf(PropTypes.object),
+  onResetPostStatus: PropTypes.func.isRequired,
   fetchLoading: PropTypes.bool,
-  posted:PropTypes.bool.isRequired
+  posted: PropTypes.bool.isRequired
 };

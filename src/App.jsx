@@ -20,8 +20,8 @@ const App = () => (
           <Route path="/input" component={DataInput} />
           <Route path="/main" component={Main} />
           <Route path="/login" component={LogIn} />
-          <Route path="/" exact component={LogIn} />
           <Route path="/500" component={InternalServerError}/>
+          <Route path="/" exact component={LogIn} />
           <Route path="*" component={PageNotFound}/>
         </Switch>
       </Layout>

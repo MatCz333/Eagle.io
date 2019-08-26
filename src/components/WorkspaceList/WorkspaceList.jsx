@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import React, { Component } from "react";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import ListItem from "@material-ui/core/ListItem";
 import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
@@ -45,7 +45,7 @@ class WorkspaceList extends Component {
       }
     }
     const workspaceListItem = (
-      <div>
+      <React.Fragment>
         <ListItem
           disabled={
             !!(workspace.children === undefined || workspace.children === 0)
@@ -67,17 +67,16 @@ class WorkspaceList extends Component {
         <Collapse in={isOpen} timeout="auto" unmountOnExit>
           {groupList}
         </Collapse>
-      </div>
+      </React.Fragment>
     );
     const WithToolTipWorkspace = withToolTip(workspaceListItem);
     return <WithToolTipWorkspace key={workspace._id} parent={workspace} />;
   }
 }
 
-WorkspaceList.propTypes={
-  click:PropTypes.func.isRequired,
-  workspace:PropTypes.shape({
-  }).isRequired,
+WorkspaceList.propTypes = {
+  click: PropTypes.func.isRequired,
+  workspace: PropTypes.shape({}).isRequired,
   getAllChildrenPerParent: PropTypes.func.isRequired
-}
+};
 export default WorkspaceList;

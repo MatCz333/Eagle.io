@@ -1,6 +1,8 @@
 /* eslint-disable no-underscore-dangle */
 import React, { Component } from "react";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
+import withStyles from "@material-ui/core/styles/withStyles";
+import Checkbox from "@material-ui/core/Checkbox";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
@@ -12,13 +14,30 @@ import * as actions from "../../store/actions/index";
 import axios from "../../axios-eagle";
 import DateAndTimePicker from "../DateAndTimePicker";
 
+/**
+ * Styling
+ */
+const styles = theme => ({
+  formControl: {
+    display: "flex",
+    position: "relative"
+  },
+  checkbox: {
+    position: "absolute",
+    top: 7,
+    right: -10
+  },
+  input: {
+    maxWidth: "90%"
+  }
+});
+
 /** "
  * Responsible for generating  a data input form component
  *
  */
 
 class InputForm extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -26,91 +45,111 @@ class InputForm extends Component {
     };
     const { getAllChildrenPerParent, elementSelected } = props;
     const model = getAllChildrenPerParent(elementSelected);
-    const inputConfig = {}
+    const inputConfig = {};
     // setting initial state for each parameter
     model.forEach(parameter => {
       inputConfig[parameter._id] = {
-      time : parameter.currentTime,
-      units : parameter.units,
-      defaultValue: parameter.currentValue,
-      name: parameter.name,
-      currentValue: parameter.currentValue,
-      focused: false
-      }
+        time: parameter.currentTime,
+        units: parameter.units,
+        defaultValue: parameter.currentValue,
+        name: parameter.name,
+        currentValue: parameter.currentValue,
+        focused: false,
+        checked: true
+      };
     });
-   this.state.inputConfig = inputConfig
+    this.state.inputConfig = inputConfig;
   }
 
   inputChangedHandler = (event, date) => {
-    const{validateForm} = this.props
-    const{inputConfig} = this.state
+    const { validateForm } = this.props;
+    const { inputConfig } = this.state;
     if (date) {
       this.setState({ date });
       return;
     }
-    const { value, id} = event.currentTarget;
+    const { value, id } = event.currentTarget;
     // get back default value when input is blank
-    if(value === ""){
+    if (value === "") {
       this.setState(prevState => ({
         ...prevState,
         inputConfig: {
           ...inputConfig,
-          [id]:{
+          [id]: {
             ...prevState.inputConfig[id],
-                currentValue: ""
+            currentValue: ""
           }
-        }}))
+        }
+      }));
     } else {
       this.setState(prevState => ({
         ...prevState,
         inputConfig: {
           ...inputConfig,
-          [id]:{
+          [id]: {
             ...prevState.inputConfig[id],
-                currentValue: value
+            currentValue: value
           }
-        }}))
+        }
+      }));
     }
-    validateForm()
+    validateForm();
   };
-
 
   postDataHandler = () => {
     const { ...rest } = this.state;
-    const {onPostData} = this.props
+    const { onPostData } = this.props;
     onPostData(rest);
   };
 
-  onBlurHandler = event =>{
-    const{inputConfig} = this.state
-    const { id} = event.currentTarget;
+  onCheckedHandler = id => event => {
+    event.persist();
+    const { inputConfig } = this.state;
     this.setState(prevState => ({
       ...prevState,
       inputConfig: {
         ...inputConfig,
-        [id]:{
+        [id]: {
+          ...prevState.inputConfig[id],
+          checked: event.target.checked
+        }
+      }
+    }));
+  };
+
+  onBlurHandler = event => {
+    const { inputConfig } = this.state;
+    const { id } = event.currentTarget;
+    this.setState(prevState => ({
+      ...prevState,
+      inputConfig: {
+        ...inputConfig,
+        [id]: {
           ...prevState.inputConfig[id],
           focused: false
         }
-      }}))
-  }
+      }
+    }));
+  };
 
-  onFocusHandler  = event =>{
-    const{inputConfig} = this.state
-    const {  id} = event.currentTarget;
+  onFocusHandler = event => {
+    const { inputConfig } = this.state;
+    const { id } = event.currentTarget;
     this.setState(prevState => ({
       ...prevState,
       inputConfig: {
         ...inputConfig,
-        [id]:{
+        [id]: {
           ...prevState.inputConfig[id],
           focused: true
         }
-      }}))
-  }
+      }
+    }));
+  };
 
   renderForm = elementSelected => {
-    const{ inputConfig} = this.state;
+    const { classes } = this.props;
+    const { inputConfig } = this.state;
     const parameterValues = Object.entries(inputConfig).map(parameter => {
       return (
         <React.Fragment key={parameter[0]}>
@@ -120,13 +159,20 @@ class InputForm extends Component {
             }}
             item
             xs={12}
+            className={classes.formControl}
           >
             <TextField
-            onBlur={this.onBlurHandler}
-            onFocus={this.onFocusHandler}
-            fullWidth
-            value={(!parameter[1].focused && !parameter[1].currentValue ? parameter[1].defaultValue: parameter[1].currentValue)}
-            type="number"
+              className={classes.input}
+              disabled={!parameter[1].checked}
+              fullWidth
+              onBlur={this.onBlurHandler}
+              onFocus={this.onFocusHandler}
+              value={
+                !parameter[1].focused && !parameter[1].currentValue
+                  ? parameter[1].defaultValue
+                  : parameter[1].currentValue
+              }
+              type="number"
               inputRef={element => {
                 this[parameter[1].name] = element;
               }}
@@ -147,6 +193,14 @@ class InputForm extends Component {
                 )
               }}
             />
+            <Checkbox
+              color="primary"
+              onChange={this.onCheckedHandler(parameter[0])}
+              checked={parameter[1].checked}
+              className={classes.checkbox}
+              value={parameter[0]}
+              inputProps={{ "aria-label": parameter[0] }}
+            ></Checkbox>
           </Grid>
         </React.Fragment>
       );
@@ -237,15 +291,14 @@ const mapDispatchToProps = dispatch => {
     onPostData: formData => dispatch(actions.postDataStarted(formData))
   };
 };
-InputForm.propTypes={
-  elementSelected:PropTypes.shape({}).isRequired,
-  getAllChildrenPerParent:PropTypes.func.isRequired,
-  validateForm:PropTypes.func.isRequired,
-  onPostData:PropTypes.func.isRequired,
-  posting:PropTypes.bool.isRequired,
-
-}
+InputForm.propTypes = {
+  elementSelected: PropTypes.shape({}).isRequired,
+  getAllChildrenPerParent: PropTypes.func.isRequired,
+  validateForm: PropTypes.func.isRequired,
+  onPostData: PropTypes.func.isRequired,
+  posting: PropTypes.bool.isRequired
+};
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(InputForm, axios);
+)(withStyles(styles)(InputForm, axios));

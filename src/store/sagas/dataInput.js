@@ -29,49 +29,51 @@ export function* fetchDataSaga(props) {
     const convertedData = yield getNestedChildren(response.data);
     yield put(actions.fetchDataSuccess(convertedData));
   } catch (error) {
-    if( error.response === undefined) {
-      yield put(actions.handleHTTPError({
-          response:{
-            data:{
-              error:{
-                message: "Network Error: Please check your connection"}
+    if (error.response === undefined) {
+      yield put(
+        actions.handleHTTPError({
+          response: {
+            data: {
+              error: {
+                message: "Network Error: Please check your connection"
               }
             }
           }
-        ))
+        })
+      );
+    } else if (error.response.status === 404) {
+      yield props.props.history.push("/404");
+    } else if (error.response.status === 500) {
+      yield props.props.history.push("/500");
     }
-    else if (error.response.status === 404) {
-      yield props.props.history.push("/404")
-    }
-    else if (error.response.status === 500) {
-      yield props.props.history.push("/500")
-    }
-  yield put(actions.fetchDataFailed())
-   yield put(actions.handleHTTPError(error, props))
+    yield put(actions.fetchDataFailed());
+    yield put(actions.handleHTTPError(error, props));
   }
 }
-  
+
 /**
  * A saga that handles asynchronous side effects of posting the data to API
  */
 export function* postDataSaga(action) {
-  const { formData: {
-    inputConfig
-  } } = action;
-  const {date} =  action.formData
+  const {
+    formData: { inputConfig }
+  } = action;
+  const { date } = action.formData;
   const parametersArray = [];
   const data = [];
   const values = {};
   Object.entries(inputConfig).forEach((entries, index) => {
-      // get parameters ID'S
-      parametersArray.push(`${entries[0]}(columnIndex:${index})`);
-      // get values
-      values[index] = { v: parseFloat(entries[1].currentValue, 10) };
-  });
+    // if input was checked process further
+    if(entries[1].checked){
+    // get parameters ID'S
+    parametersArray.push(`${entries[0]}(columnIndex:${index})`);
+    // get values
+    values[index] = { v: parseFloat(entries[1].currentValue, 10) };
+  }});
 
   data.push({
-    "ts": moment(date).toISOString(),
-    "f": values
+    ts: moment(date).toISOString(),
+    f: values
   });
 
   const updatedBodyValues = {
@@ -86,16 +88,12 @@ export function* postDataSaga(action) {
   };
 
   try {
-    const response = yield axios.put(
-      "/historic",
-      updatedBodyValues,
-      {
-        params: parameters
-      }
-    );
+    const response = yield axios.put("/historic", updatedBodyValues, {
+      params: parameters
+    });
     yield put(actions.postDataSuccess(response.data.name, action.formData));
   } catch (error) {
-    yield put(actions.postDataFailed())
-    yield put(actions.handleHTTPError(error))
+    yield put(actions.postDataFailed());
+    yield put(actions.handleHTTPError(error));
   }
 }

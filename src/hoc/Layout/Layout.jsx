@@ -64,11 +64,12 @@ function Layout(props) {
     setMobileOpen(!mobileOpen);
   };
 
- 
   const onClickListItem = () => {
-    const { onChangeView } = props;
-    onChangeView();
-  };
+    const { onChangeView, onFetchData } = props;
+    if (location.pathname === "/input"){
+      onChangeView();
+      onFetchData();
+  }}
   return (
     <div className={classes.root}>
       {location.pathname === "/main" || location.pathname === "/" ? null : (
@@ -127,6 +128,7 @@ function Layout(props) {
 
 const mapDispatchToProps = dispatch => {
   return {
+    onFetchData: (props) => dispatch(actions.fetchDataStarted(props)),
     onChangeView: () => dispatch(actions.updatePostStatus())
   };
 };
